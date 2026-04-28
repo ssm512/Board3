@@ -12,8 +12,9 @@
 							USERNAME,
 							EMAIL,
 							UPOINT,
-							REGDATE
-		FROM			tuser 
+							TO_CHAR(REGDATE, 'YYYY-MM-DD') REGDATE
+		FROM			TUSER 
+		ORDER BY  USERID ASC
 	</select>	
 
 	<select id="getUser">
@@ -22,7 +23,7 @@
   					USERNAME,
 						EMAIL,
 						UPOINT,
-						REGDATE
+						TO_CHAR(REGDATE, 'YYYY-MM-DD HH24:MI:SS') REGDATE
 		FROM		tuser
 		WHERE		userid = #{userid} 
 	</select>
@@ -31,6 +32,7 @@
 	INSERT INTO tuser VALUES (#{userid}, #{password}, #{username}, #{email}, 0, SYSDATE)
 	</insert>
 	
+	<!-- 사용자 삭제 -->
 	<delete id="deleteUser">
 	DELETE FROM tuser WHERE userid = #{userid}
 	</delete>
@@ -39,7 +41,9 @@
 	UPDATE tuser
   SET	password = #{password},
   	  username = #{username},
-  	  email = #{email} 
+  	  email 	 = #{email} 
   WHERE userid = #{userid}
 	</update>
+	
+	
 </mapper>
