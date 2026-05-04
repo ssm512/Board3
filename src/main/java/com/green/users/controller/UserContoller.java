@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.green.users.dto.UserDTO;
@@ -96,6 +98,46 @@ public class UserContoller {
 		return mv;
 	}
 	
+	// 아이디 중복 확인 - jsp를 return하는게 아닌 결과 문자열을 리턴
+	// <b class="green">사용 가능한 아이디입니다.</b>
+	// <b class="red">사용 불가능한 아이디입니다.</b>
+	// /Users/IdDupCheck2?userid=sky
+	@GetMapping("/IdDupCheck2")
+	@ResponseBody		// 리턴되는 값은 jsp가 아니다
+	public UserDTO idDupCheck2 (UserDTO userDTO) {
+		// String		userid		=	userDTO.getUserid(); // 넘어온 userid - 필요없음
+		UserDTO		user		=	userMapper.getIdDupCheck(userDTO); // 넘어온 userid를 들고가서 조회하는거임
+		if (user == null)  // 넘어온 userid가 없으면 null값이 return되는데 jsp로 넘어가는게 아무것도 없어서 새객체를 하나 만들어서 jsp로 넘김
+			user = new UserDTO();
+		
+		return user;
+	}
+	
+	// /Users/DupCheckWindow
+	@GetMapping("/DupCheckWindow")
+	public ModelAndView dupCheckWindow () {
+		
+		
+		ModelAndView	mv	=	new	ModelAndView();
+		mv.setViewName("users/idcheck");
+		mv.addObject("userid", "aaa");
+		return mv;
+	}
+	
+	// 중복확인 
+	// /Users/DupCheck?userid=aaa
+	@RequestMapping("/DupCheck")
+	public ModelAndView dupCheck (UserDTO userDTO) {
+		UserDTO			user	=	userMapper.getUser(userDTO);
+		String			msg		=	"<b class='red'>사용 불가능</b>";
+		if(user == null)
+			msg = "<b class='green'>사용 가능</b>";
+		
+		ModelAndView	mv	=	new	ModelAndView();
+		mv.setViewName("users/idcheck");
+		mv.addObject("msg", msg);
+		return mv;
+	}
 	
 	/* list 내가한거
 	@RequestMapping("/List")

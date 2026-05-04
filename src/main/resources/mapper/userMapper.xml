@@ -45,5 +45,16 @@
   WHERE userid = #{userid}
 	</update>
 	
+	<!-- 아이디 중복 확인 -->
+	<select id="getIdDupCheck">
+	SELECT 	USERID,
+					PASSWORD,
+  				USERNAME,
+					EMAIL,
+					UPOINT,
+					TO_CHAR(REGDATE, 'YYYY-MM-DD HH24:MI:SS') REGDATE 
+	FROM		tuser
+	WHERE		userid=#{userid}
+	</select>
 	
 </mapper>
